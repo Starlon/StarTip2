@@ -31,6 +31,7 @@ local keys = {}
 local timerWidgets = {}
 local keyWidgets = {}
 local addons = {}
+local currentAddon = nil
 
 local environment = {}
 StarTip.environment = environment
@@ -1012,10 +1013,9 @@ function StarTip:SlashCommand(str)
         local count = 0
         for addon, _ in pairs(addons) do
             print(addon == currentAddon and ">>" or ">", addon);
+            count = count + 1
         end
-
-        print("There are " .. count .. " many profiles available.")
-    elseif command == "profile" then
+    elseif command == "setprofile" then
         local addon = self:GetArgs(str, 2, 1)
         for k, _ in pairs(addons) do
             if addon == k then
@@ -1026,7 +1026,7 @@ function StarTip:SlashCommand(str)
     elseif command == "config" then
         self:OpenConfig()
     else
-        self:Print("Commands are 'profiles', 'profile <profile-name>', and 'config'.")
+        self:Print("Commands are 'profiles', 'setprofile <profile-name>', and 'config'.")
     end
 end
 
