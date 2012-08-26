@@ -1,6 +1,14 @@
-local profile = ...
+local L = LibStub("AceLocale-3.0"):GetLocale("StarTip")
 
-profile.unittooltip = {
+local WidgetText = LibStub("LibScriptableWidgetText-1.0")
+local WidgetBar = LibStub("LibScriptableWidgetBar-1.0")
+local WidgetHistogram = LibStub("LibScriptableWidgetHistogram-1.0")
+
+local LSM = LibStub("LibSharedMedia-3.0")
+
+local profile = {}
+
+profile.lines = {
     [1] = {
         name = "UnitName",
         left = [[
@@ -845,6 +853,8 @@ return status
 
 }
 
+profile.borders = {}
+
 profile.background = {
 
         guild = [[
@@ -972,7 +982,11 @@ end
             }
         }
 
-profile.histogram = {
+profile.animation = {
+
+}
+
+profile.histograms = {
     [1] = {
         name = "Health",
         expression = "return UnitHealth(unit)",
