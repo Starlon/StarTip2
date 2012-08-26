@@ -1,5 +1,5 @@
 local mod = StarTip:NewModule("Position", "AceEvent-3.0", "AceHook-3.0")
-local animation = StarTip:GetModule("Animation")
+local Animation = StarTip:GetModule("Animation")
 mod.name = "Positioning"
 local LibTimer = LibStub("LibScriptableUtilsTimer-1.0")
 local Evaluator = LibStub("LibScriptableUtilsEvaluator-1.0")
@@ -9,6 +9,8 @@ local StarTip = _G.StarTip
 local UIParent = _G.UIParent
 local self = mod
 local L = StarTip.L
+mod.environment = {}
+mod.environment.StarTip = StarTip
 
 local square = {L["Left"], L["Right"], L["Top"], L["Bottom"], L["Offscreen"]}
 local squareDict = {[L["Left"]] = 1, [L["Right"]] = 2, [L["Top"]] = 3, [L["Bottom"]] = 4, [L["Offscreen"]] = 5}
@@ -55,17 +57,6 @@ local mod = StarTip:GetModule("Position")
 x = mod.db.profile.otherXOffset
 y = mod.db.profile.otherYOffset
 ]],
-		animationInit = [[
-t = 0
-]],
-		animationFrame = [[
-t = t - 5
-v = 0
-]],
-		animationPoint = [[
-d=(v*0.3); r=t+i*PI*0.02; x=cos(r)*d; y=sin(r)*d
-]]
-		
 	}
 }
 mod.defaults = defaults
@@ -324,33 +315,6 @@ local options = {
 		set = function(info, val) mod.db.profile.otherScript = val end,
 		order = 26
 	},
-	animationInit = {
-		name = "Animation Init Script",
-		type = "input",
-		multiline = true,
-		width = "full",
-		get = function() return mod.db.profile.animationInit end,
-		set = function(info, val) mod.db.profile.animationInit = val end,
-		order = 27
-	},
-	animationFrame = {
-		name = "Animation Frame Script",
-		type = "input",
-		multiline = true,
-		width = "full",
-		get = function() return mod.db.profile.animationFrame end,
-		set = function(info, val) mod.db.profile.animationFrame = val end,
-		order = 28
-	},
-	animationPoint = {
-		name = "Animation Point Script",
-		type = "input",
-		multiline = true,
-		width = "full",
-		get = function() return mod.db.profile.animationPoint end,
-		set = function(info, val) mod.db.profile.animationPoint = val end,
-		order = 29
-	}
 }
 
 local PositionTooltip, PositionMainTooltip
@@ -366,11 +330,9 @@ function mod:OnEnable()
 	StarTip:SetOptionsDisabled(options, false)
 	self.updateTimer = LibTimer:New("Position timer", self.db.profile.refreshRate, true, PositionTooltip)
 	self.fakeUpdateTimer = LibTimer:New("Position fake timer", self.db.profile.refreshRate, true, PositionMainTooltip)
-	self.environment = {}
-	for k, v in pairs(StarTip.environment) do
-		self.environment[k] = v
-	end
-        Evaluator.ExecuteCode(self.environment, "StarTip.Position.animationInit", mod.db.profile.animationInit)
+    if self.db.profile.animationsOn then
+        Animation:RunInit()
+    end
 end
 
 function mod:OnDisable()
@@ -403,7 +365,7 @@ local getIndex = function()
 end
 
 function mod:GetPosition(x, y)
-	local environment = self.environment
+	local environment = mod.environment
 	environment.x = x
 	environment.y = y
 	if currentOwner == UIParent then
@@ -443,9 +405,10 @@ PositionTooltip = function()
 
 	x, y = mod:GetPosition(x, y) -- execute user script
 
+    if mod.db.profile.animationOn then
+        x, y = Animation:RunPoint(x, y)
+    end
 
-	--local xx, yy = Evaluator.ExecuteCode(mod.environment, "Position.animation", mod.db.profile.animation)
-	
 	local index = getIndex(environment.anchorFrame)
 	local anchor =  environment.anchor or StarTip.opposites[StarTip.anchors[index]:sub(8)]
 	local relative = environment.relativeRelative or "BOTTOMLEFT"
@@ -475,21 +438,15 @@ end
 
 PositionMainTooltip = function()
 	local tooltip = StarTip.tooltipMain
-	local environment = mod.environment
+    local environment = mod.environment
 	environment.effScale = tooltip:GetEffectiveScale()
 	local x, y = GetCursorPosition()
 	x, y = mod:GetPosition(x, y) -- execute user script
 
 	-- animation
 	if mod.db.profile.animationsOn then
-		mod.environment.i = (mod.environment.i or 0) + 1
-		mod.environment.v = (mod.environment.v or 0) +  random() / 100
-		Evaluator.ExecuteCode(mod.environment, "Position.animationPoint", mod.db.profile.animationPoint)
-		local xx, yy = mod.environment.x, mod.environment.y
-	        x = x + floor((((xx or 0) + 1.0) * GetScreenWidth() * 0.01))
-        	y = y + floor((((yy or 0) + 1.0) * GetScreenHeight() * 0.01))
+        x, y = Animation:RunPoint(x, y);
 	end
-
 
 	local effScale = environment.effScale
 	local anchor =  environment.anchor or "BOTTOMRIGHT"
@@ -585,8 +542,6 @@ function mod:GameTooltip_SetDefaultAnchor(this, owner)
 	local index = getIndex(owner)
 	local ownername = owner:GetName()
 
-	Evaluator.ExecuteCode(mod.environment, "StarTip.Position.animationFrame", self.db.profile.animationFrame)
-
 	if owner == MainMenuMicroButton then -- This one is troublesome, so single it out and anchor right away.
 		delayAnchor() 
 	else
@@ -640,4 +595,5 @@ function mod:SetUnit()
 	if not StarTip.anchors[index]:find("^CURSOR_") then
 		hideGameTooltip()
 	end
+    Animation:RunFrame()
 end

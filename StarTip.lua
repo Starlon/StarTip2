@@ -288,10 +288,14 @@ StarTip.InitializeAddon = InitializeProfile
 local loadedAddon = "Default"
 
 function StarTip:Finalize(addon)
-    local data = assert(addons[addon] ~= nil, "That addon does not exist: " .. addon)
+    assert(addons[addon] ~= nil, "That addon does not exist: " .. addon)
+
+    local data = addons[addon]
 
     loadedAddon = addon
+
     StarTip.db.profile.addon = addon
+
     self:EstablishLines(data.lines)
     --self:EstablishBars(data.bars)
     --self:EstablishBorders(data.borders)
@@ -1007,7 +1011,7 @@ function StarTip:RebuildOpts()
 end
 
 function StarTip:SlashCommand(str)
-    local command = self:GetArgs(str, 2, 0)
+    local command = self:GetArgs(str, 2, 1)
     if command == "profiles" then
 
         local count = 0
@@ -1016,11 +1020,10 @@ function StarTip:SlashCommand(str)
             count = count + 1
         end
     elseif command == "setprofile" then
-        local addon = self:GetArgs(str, 2, 1)
+        local _, addon = self:GetArgs(str, 2, 2)
         for k, _ in pairs(addons) do
             if addon == k then
                 self:Finalize(addon)
-                self:Print("Loaded new profile: " .. addon)
             end
         end
     elseif command == "config" then
