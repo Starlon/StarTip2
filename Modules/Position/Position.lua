@@ -1,4 +1,5 @@
 local mod = StarTip:NewModule("Position", "AceEvent-3.0", "AceHook-3.0")
+local animation = StarTip:GetModule("Animation")
 mod.name = "Positioning"
 local LibTimer = LibStub("LibScriptableUtilsTimer-1.0")
 local Evaluator = LibStub("LibScriptableUtilsEvaluator-1.0")

@@ -295,7 +295,7 @@ function StarTip:Finalize(addon)
     --self:EstablishBars(data.bars)
     --self:EstablishBorders(data.borders)
     --self:EstablishBackground(data.background)
-    --self:EstablishAnimation(data.animation)
+    self:EstablishAnimation(data.animation)
     --self:EstablishHistograms(data.histograms)
 
     StarTip:Print("Loaded new profile: " .. addon)

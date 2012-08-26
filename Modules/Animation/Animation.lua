@@ -1,5 +1,4 @@
-local addon, ns = ...
-local StarTip = ns.StarTip
+--local addon, ns = ...
 local mod = StarTip:NewModule("Animation")
 local Evaluator = LibStub("LibScriptableUtilsEvaluator-1.0")
 local Timer = LibStub("LibScriptableUtilsTimer-1.0")
@@ -43,8 +42,8 @@ function mod:RunPoint(x, y)
         mod.environment.v = (mod.environment.v or 0) +  random()
         mod.environment.x = x
         mod.environment.y = y
-        mod.environment.width = StarTip.tooltipMain.frame:GetWidth()
-        mod.environment.height = StarTip.tooltipMain.frame:GetHeight()
+        mod.environment.width = StarTip.tooltipMain:GetWidth()
+        mod.environment.height = StarTip.tooltipMain:GetHeight()
         mod.environment.unit = StarTip.unit
         mod.environment.self = mod.environment.self or {}
         Evaluator.ExecuteCode(mod.environment, "Position.animationPoint", self.animation.animationPoint)

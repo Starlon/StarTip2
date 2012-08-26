@@ -1091,4 +1091,20 @@ end
 
 }
 
+profile.animation = {
+    animationsOn = false,
+    animationSpeed = 1000,
+    animationInit = [[
+gravity = true
+t = 0
+]],
+    animationBegin = [[
+t = t - 5
+v = 0
+]],
+    animationPoint = [[
+d=(v*0.3); r=t+i*PI*0.02; x=cos(r)*d; y=sin(r)*d
+]]
+}
+
 StarTip:InitializeProfile("Default", profile)
