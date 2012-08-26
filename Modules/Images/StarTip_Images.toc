@@ -1,0 +1,10 @@
+## Interface: 40000
+## Title: StarTip [Images]
+## Notes: Tooltips from outerspace
+## Author: Starlon
+## Version: 1.0
+## Deps: StarTip
+## X-Category: Tooltip
+## X-Part-Of: StarTip
+
+Images.lua

@@ -1,0 +1,31 @@
+## Interface: 40300
+## Title: StarTip
+## Notes: |cff751f82StarTip (|r|cccf20285Tooltips |r|cff751f82from |r|cff751f82O|r|cff202585u|r|cff751f82t|r|cff202585e|r|cff751f82r|r|cff202585s|r|cff751f82p|r|cff202585a|r|cff751f82c|r|cff202585e|r|cff751f82)|r
+## Author: Starlon
+## Version: @project-version@
+## X-Category: Tooltip
+## X-License: GPL v3
+## X-Credits: ckknight for CowTip and DogTags. Shefki for LuaTexts.
+## OptionalDeps: Ace3, LibScriptable-1.0, kgPanels, Skada, Chatter, Recount, LibTalentQuery-1.0, LibGroupTalents-1.0, LibQTip-1.0, LibRangeCheck-2.0, LibBossIDs-1.0, LibQTip-1.0, LibUnitControl-1.0, LibNameplate-1.0, LibTransition-1.0, LibAlts-1.0, LibLinq-1.0, LibFail-2.0, LibBossIDs-1.0, LibLinq-1.0, LibMouseGestures-1.0, LibNameplate-1.0
+## SavedVariables: StarTipDB
+
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+
+embeds.xml
+
+Localization\enUS.lua
+Localization\deDE.lua
+Localization\esES.lua
+Localization\frFR.lua
+Localization\ruRU.lua
+Localization\zhTW.lua
+Localization\esMX.lua
+Localization\koKR.lua
+Localization\zhCN.lua
+
+StarTip.lua
+
+modules.xml
+
+

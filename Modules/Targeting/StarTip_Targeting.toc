@@ -1,0 +1,11 @@
+## Interface: 40200
+## Title: StarTip [Targeting]
+## Notes: Tooltips from Outerspace
+## Author: Starlon
+## Version: 1.0
+## OptionalDeps: StarTip_UnitTooltip
+## Deps: StarTip
+## X-Category: Tooltip
+## X-Part-Of: StarTip
+
+Targeting.lua
