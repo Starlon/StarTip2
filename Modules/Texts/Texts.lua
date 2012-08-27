@@ -490,11 +490,11 @@ function mod:OnDisable()
 end
 
 function mod:Establish(texts)
-    self:WipeLines()
+    self:ClearTexts()
     defaultWidgets = texts
     self.db.profile.texts = nil
     self:ReInit()
-    self:CreateLines()
+    self:CreateTexts()
 end
 
 function mod:GetOptions()

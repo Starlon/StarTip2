@@ -1289,4 +1289,15 @@ d=(v*0.3); r=t+i*PI*0.02; x=cos(r)*d; y=sin(r)*d
 ]]
 }
 
+profile.portrait = {
+        size = 36,
+        tooltipMain = true,
+        tooltipUnit = true,
+        tooltipItem = true,
+        tooltipSpell = true,
+        animated = false,
+        enabled = true
+        
+}
+
 StarTip:InitializeProfile("Default", profile)
