@@ -50,8 +50,9 @@ function mod:RunPoint(x, y)
 
         local xx, yy = mod.environment.x or 0, mod.environment.y or 0
         if mod.environment.gravity then
-                x = x + floor((((xx or 0) + 1.0) * UIParent:GetWidth() / self.animation.animationSpeed))
-                y = y + floor((((yy or 0) + 1.0) * UIParent:GetHeight() / self.animation.animationSpeed))
+                local speed = (6001 - self.animation.animationSpeed) / 5
+                x = x + floor((((xx or 0) + 1.0) * UIParent:GetWidth() / speed))
+                y = y + floor((((yy or 0) + 1.0) * UIParent:GetHeight() / speed))
         else
             x = xx
             y = yy
