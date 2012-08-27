@@ -11,11 +11,23 @@ profile.lines = {
         left = [[
 local name = Name(unit)
 if not name then return end
-name = name .. (UnitIsPVP(unit) and "<PVP>" or "")
-local afk = AFK(unit) or ""
-local offline = Offline(unit) or ""
+local pvp = UnitIsPVP(unit) and Angle("PVP") or ""
+local afk = AFK(unit) and Angle(AFK(unit)) or ""
+local offline = Offline(unit) and Angle(Offline(unit)) or ""
+
+local r, g, b
+if UnitIsPlayer(unit) then
+    r, g, b = ClassColor(unit)
+else
+    if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
+        r, g, b = .5, .5, .5
+    else
+        r, g, b = UnitSelectionColor(unit)
+    end
+end
+
 if name then
-    return Colorize(name .. afk .. offline, ClassColor(unit))
+    return Colorize(("%s %s%s%s"):format(name, afk, offline, pvp), r, g, b)
 end
 ]],
         enabled = true,
@@ -117,7 +129,7 @@ return r, g, b, .5
 
 
 profile.animation = {
-    animationsOn = true,
+    animationsOn = false,
     animationSpeed = 1000,
     animationInit = [[
 gravity = true
