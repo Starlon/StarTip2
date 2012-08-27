@@ -1,0 +1,14 @@
+## Interface: 40300
+## Title: StarTip [Natural Profile]
+## Notes: A Journey through Outer Space
+## Author: Starlon
+## Version: 1.0
+## Deps: StarTip2
+## X-Category: Tooltip
+## X-Part-Of: StarTip2
+## X-Curse-Packaged-Version: v0.1.3-beta
+## X-Curse-Project-Name: StarTip2
+## X-Curse-Project-ID: startip2
+## X-Curse-Repository-ID: wow/startip2/mainline
+
+StarTipNatural.lua

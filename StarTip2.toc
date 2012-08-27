@@ -1,6 +1,6 @@
 ## Interface: 40300
-## Title: StarTip
-## Notes: |cff751f82StarTip|r - A Voyage through Outer Space.
+## Title: StarTip2
+## Notes: |cff751f82StarTip2|r - A Voyage through Outer Space.
 ## Author: Starlon
 ## Version: @project-version@
 ## X-Category: Tooltip
