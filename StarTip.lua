@@ -199,7 +199,8 @@ local defaults = {
         intersectRate = 300,
         modifierInverse = false,
         message = true,
-        backup = true
+        backup = true,
+        addon = "Default"
     }
 }
 
@@ -285,14 +286,14 @@ end
 
 StarTip.InitializeAddon = InitializeProfile
 
-local loadedAddon = "Default"
+local currentAddon = "Default"
 
 function StarTip:Finalize(addon)
     assert(addons[addon] ~= nil, "That addon does not exist: " .. addon)
 
     local data = addons[addon]
 
-    loadedAddon = addon
+    currentAddon = addon
 
     StarTip.db.profile.addon = addon
 
@@ -696,6 +697,46 @@ function StarTip:OnInitialize()
     makeNewTooltip()
 end
 
+function StarTip:OnEnable()
+    if self.db.profile.minimap.hide then
+        LibDBIcon:Hide("StarTipLDB")
+    else
+        LibDBIcon:Show("StarTipLDB")
+    end
+
+    GameTooltip:HookScript("OnTooltipSetUnit", self.OnTooltipSetUnit)
+    GameTooltip:HookScript("OnTooltipSetItem", self.OnTooltipSetItem)
+    GameTooltip:HookScript("OnTooltipSetSpell", self.OnTooltipSetSpell)
+    self:RawHookScript(GameTooltip, "OnHide", "OnTooltipHide")
+    self:RawHookScript(GameTooltip, "OnShow", "OnTooltipShow")
+    self:RawHook(GameTooltip, "FadeOut", "GameTooltipFadeOut", true)
+    self:RawHook(GameTooltip, "Hide", "GameTooltipHide", true)
+    self:RawHook(GameTooltip, "Show", "GameTooltipShow", true)
+    --self:RawHook(GameTooltip, "GetUnit", "GameTooltipGetUnit", true)
+    
+    for k,v in self:IterateModules() do
+        if (self.db.profile.modules[k]  == nil and not v.defaultOff) or self.db.profile.modules[k] then
+            v:Enable()
+        end
+    end
+
+    
+    self:RestartTimers()
+    self:RestartKeys()
+
+    --self:RebuildOpts()
+    
+    self:RegisterEvent("MODIFIER_STATE_CHANGED")
+    
+    local plugin = {}
+    LibStub("LibScriptablePluginColor-1.0"):New(plugin)
+    if self.db.profile.message then
+        ChatFrame1:AddMessage("|cff751f82" .. L["Welcome to "] .. "|r" .. StarTip.notes .. plugin.Colorize(L[" Type /startip to open config. Alternatively you could press escape and choose the addons menu. Or you can choose to show a minimap icon. You can turn off this message under Settings."], 1, 1, 0))
+    end
+
+    self:Finalize(self.db.profile.addon or "Default")
+end
+
 StarTip.cellProvider, StarTip.cellPrototype = LQT:CreateCellProvider()
 
 function StarTip.cellPrototype:InitializeCell()
@@ -780,43 +821,6 @@ end
 StarTip.trunk = trunk
 StarTip.trunkTimer = LibTimer:New("Trunk Timer", 300, false, trunkUpdate)
 
-function StarTip:OnEnable()
-    if self.db.profile.minimap.hide then
-        LibDBIcon:Hide("StarTipLDB")
-    else
-        LibDBIcon:Show("StarTipLDB")
-    end
-
-    GameTooltip:HookScript("OnTooltipSetUnit", self.OnTooltipSetUnit)
-    GameTooltip:HookScript("OnTooltipSetItem", self.OnTooltipSetItem)
-    GameTooltip:HookScript("OnTooltipSetSpell", self.OnTooltipSetSpell)
-    self:RawHookScript(GameTooltip, "OnHide", "OnTooltipHide")
-    self:RawHookScript(GameTooltip, "OnShow", "OnTooltipShow")
-    self:RawHook(GameTooltip, "FadeOut", "GameTooltipFadeOut", true)
-    self:RawHook(GameTooltip, "Hide", "GameTooltipHide", true)
-    self:RawHook(GameTooltip, "Show", "GameTooltipShow", true)
-    --self:RawHook(GameTooltip, "GetUnit", "GameTooltipGetUnit", true)
-    
-    for k,v in self:IterateModules() do
-        if (self.db.profile.modules[k]  == nil and not v.defaultOff) or self.db.profile.modules[k] then
-            v:Enable()
-        end
-    end
-
-    
-    self:RestartTimers()
-    self:RestartKeys()
-
-    --self:RebuildOpts()
-    
-    self:RegisterEvent("MODIFIER_STATE_CHANGED")
-    
-    local plugin = {}
-    LibStub("LibScriptablePluginColor-1.0"):New(plugin)
-    if self.db.profile.message then
-        ChatFrame1:AddMessage("|cff751f82" .. L["Welcome to "] .. "|r" .. StarTip.notes .. plugin.Colorize(L[" Type /startip to open config. Alternatively you could press escape and choose the addons menu. Or you can choose to show a minimap icon. You can turn off this message under Settings."], 1, 1, 0))
-    end
-end
 
 function StarTip:OnDisable()
     LibDBIcon:Hide("StarTipLDB")
