@@ -73,4 +73,4 @@ externals:
     Libs/LibFail-MoP: svn://svn.wowace.com/wow/libfail-mop/mainline/trunk
 
 move-folders:
-    StarTipDefault: StarTipDefault
+    StarTip/StarTipDefault: StarTipDefault
