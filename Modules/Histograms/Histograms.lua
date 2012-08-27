@@ -412,7 +412,7 @@ function mod:OnDisable()
 end
 
 function mod:GetOptions()
-    return options
+    return {} --options
 end
 
 local plugin = LibStub("LibScriptablePluginString-1.0")

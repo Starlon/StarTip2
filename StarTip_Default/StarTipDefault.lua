@@ -1085,6 +1085,194 @@ end
 
 }
 
+profile.texts = {
+    [1] = {
+        name = "Name",
+        enabled = true,
+        value = [[
+if not UnitExists(unit) then return end
+return '--' .. select(1, UnitName(unit)) .. '--'
+]],
+        color = [[
+if UnitIsPlayer(unit) then
+    return ClassColor(unit)
+elseif unit then
+    return UnitSelectionColor(unit)
+end
+]],
+        cols = 40,
+        align = WidgetText.ALIGN_PINGPONG,
+        update = 1000,
+        speed = 100,
+        direction = SCROLL_LEFT,
+        dontRtrim = true,
+        points = {{"BOTTOMLEFT", "StarTipTooltipMain", "TOPLEFT", 0, 12}},
+        parent = "StarTipTooltipMain",
+        frameName = "StarTipTextsName",
+        strata = 1,
+        level = 1,
+    },
+    [2] = {
+        name = "Health",
+        enabled = true,
+        value = [[
+if not UnitExists(unit) then return end
+local health, max = UnitHealth(unit), UnitHealthMax(unit)
+if max == 0 then max = 0.0001 end
+return format('Health: %.1f%%', health / max * 100)
+]],
+        color = [[
+if not UnitExists(unit) then return end
+local health, max = UnitHealth(unit), UnitHealthMax(unit)
+return Gradient(health / max)
+]],
+        cols = 20,
+        update = 1000,
+        points = {{"TOPLEFT", "StarTipTooltipMain", "BOTTOMLEFT", 0, 1}},
+        parent = "StarTipTooltipMain",
+        strata = 1,
+        level = 1
+    },
+    [3] = {
+        name = "Power",
+        enabled = true,
+        value = [[
+if not UnitExists(unit) then return end
+local mana, max = UnitMana(unit), UnitManaMax(unit)
+if max == 0 then max = 0.0001 end
+return format(PowerName(unit)..': %.1f%%', mana / max * 100)
+]],
+        color = [[
+if not UnitExists(unit) then return end
+local mana, max = UnitMana(unit), UnitManaMax(unit)
+return Gradient(mana / max)
+]],
+        cols = 20,
+        update = 1000,
+        align = WidgetText.ALIGN_RIGHT,
+        points = {{"TOPRIGHT", "StarTipTooltipMain", "BOTTOMRIGHT", 0, 1}},
+        parent = "StarTipTooltipMain",
+        strata = 1,
+        level = 1
+    },
+    [4] = {
+        name = "Memory Percent",
+        enabled = false,
+        value = [[
+local mem, percent, memdiff, totalMem, totaldiff, memperc = GetMemUsage("StarTip")
+if mem then
+    local num = floor(memperc)
+    if num < 1 then num = 1 end
+    if num > 100 then num = 100 end
+    local r, g, b = gradient[num][1], gradient[num][2], gradient[num][3]
+    return format("Mem: %.2f%%", memperc)
+end
+]],
+        color = [[
+local mem, percent, memdiff, totalMem, totaldiff, memperc = GetMemUsage("StarTip")
+if mem then
+    local num = floor(memperc)
+    if num < 1 then num = 1 end
+    if num > 100 then num = 100 end
+    local r, g, b = gradient[num][1], gradient[num][2], gradient[num][3]
+    return r, g, b
+end
+
+]],
+        cols = 20,
+        update = 1000,
+        dontRtrim = true,
+        points = {{"TOPLEFT", "StarTipTooltipMain", "BOTTOMLEFT", 0, -62}},
+        parent = "StarTipTooltipMain",
+        strata = 1,
+        level = 1,
+        intersect = true,
+        intersectPad = 70
+    },
+    [5] = {
+        name = "Memory Total",
+        enabled = false,
+        value = [[
+local mem, percent, memdiff, totalMem, totaldiff, memperc = GetMemUsage("StarTip")
+if mem then
+    if totalMem == 0 then totalMem = 100; mem = 0 end
+    memperc = mem / totalMem * 100
+    return format("%s (%.2f%%)", memshort(mem), memperc)
+end
+]],
+        color = [[
+return Color2RGBA(0xffff00) 
+]],
+        cols = 20,
+        update = 1000,
+        dontRtrim = true,
+        points = {{"TOPLEFT", "StarTipTooltipMain", "BOTTOMLEFT", 0, -124}},
+        parent = "StarTipTooltipMain",
+        strata = 1,
+        level = 1,
+        intersect = true,
+        intersectPad = 100
+    },
+    [6] = {
+        name = "CPU Percent",
+        enabled = false,
+        value = [[
+if not scriptProfile then return "Profiling Off" end
+local cpu, percent, cpudiff, totalCPU, totaldiff, cpuperc = GetCPUUsage("StarTip")
+if cpu then
+    return format("CPU: %.2f%%", cpuperc)
+end
+]],
+        color = [[
+if not scriptProfile then return 0, 1, 0 end
+local cpu, percent, cpudiff, totalCPU, totaldiff, cpuperc = GetCPUUsage("StarTip")
+if cpu then
+    local num = floor(cpuperc)
+    if num < 1 then num = 1 end
+    if num > 100 then num = 100 end
+    local r, g, b = gradient[num][1], gradient[num][2], gradient[num][3]
+    return r, g, b
+end
+]],
+        cols = 14,
+        align = WidgetText.ALIGN_RIGHT,
+        update = 1000,
+        dontRtrim = true,
+        points = {{"TOPRIGHT", "StarTipTooltipMain", "BOTTOMRIGHT", 0, -62}},
+        parent = "StarTipTooltipMain",
+        strata = 1,
+        level = 1,
+        intersect = true,
+        intersectPad = 70
+    },
+    [7] = {
+        name = "CPU Total",
+        enabled = false,
+        value = [[
+if not scriptProfile then return "Profiling Off" end
+local cpu, percent, cpudiff, totalCPU, totaldiff = GetCPUUsage("StarTip")
+if cpu then
+    if totalCPU == 0 then totalCPU = 100; cpu = 0 end
+    cpuperc = cpu / totalCPU * 100;
+    return format("%s (%.2f%%)", timeshort(cpu), cpuperc)
+end
+]],
+        color = [[
+return 1, 1, 0
+]],
+        cols = 20,
+        align = WidgetText.ALIGN_RIGHT,
+        update = 1000,
+        dontRtrim = true,
+        points = {{"TOPRIGHT", "StarTipTooltipMain", "BOTTOMRIGHT", 0, -124}},
+        parent = "StarTipTooltipMain",
+        strata = 1,
+        level = 1,
+        intersect = true,
+        intersectPad = 100
+    },
+}
+
 profile.animation = {
     animationsOn = true,
     animationSpeed = 300,

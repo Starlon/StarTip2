@@ -423,14 +423,8 @@ function mod:OnDisable()
 	if type(intersectTimer) == "table" then intersectTimer:Stop() end
 end
 
---[[function mod:RebuildOpts()
-	for k, v in ipairs(self.db.profile.bars) do
-		options.bars.args[k] = WidgetBar:GetOptions(v)
-	end
-end]]
-
 function mod:GetOptions()
-	return options
+	return {} --options
 end
 
 function mod:SetUnit()
@@ -498,6 +492,7 @@ local function colorGradient(perc)
 end
 
 function mod:RebuildOpts()
+    do return end
 	local defaults = WidgetBar.defaults
 	self:ClearBars()
 	wipe(options)

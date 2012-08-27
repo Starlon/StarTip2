@@ -131,7 +131,7 @@ function mod:OnDisable()
 end
 
 function mod:GetOptions()
-	return options
+	return {} --options
 end
 
 function mod:Establish(portrait)

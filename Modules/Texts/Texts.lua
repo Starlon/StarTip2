@@ -1,4 +1,4 @@
-local mod = StarTip:NewModule("Text", "AceTimer-3.0")
+local mod = StarTip:NewModule("Texts", "AceTimer-3.0")
 mod.name = "Texts"
 mod.toggled = true
 --mod.childGroup = true
@@ -397,12 +397,7 @@ end
 
 local fontstrings = {}
 function createTexts()
-	if type(mod.texts) ~= "table" then mod.texts = {} end
-	--[[for k, v in pairs(mod.texts) do
-		v:Del()
-		v.text:Hide()
-		del(v.text)
-	end]]
+    mod.texts = mod.texts or {}
 		
 	local appearance = StarTip:GetModule("Appearance")
 	for i, v in ipairs(self.db.profile.texts) do
@@ -427,6 +422,10 @@ function createTexts()
 			widget.config.unit = StarTip.unit			
 		end
 	end
+end
+
+function mod:CreateTexts()
+    createTexts()
 end
 
 function mod:ReInit()
@@ -490,14 +489,16 @@ function mod:OnDisable()
 	StarTip:SetOptionsDisabled(options, true)
 end
 
---[[function mod:RebuildOpts()
-	for k, v in ipairs(self.db.profile.texts) do
-		options.texts.args[k] = WidgetText:GetOptions(v)
-	end
-end]]
+function mod:Establish(texts)
+    self:WipeLines()
+    defaultWidgets = texts
+    self.db.profile.texts = nil
+    self:ReInit()
+    self:CreateLines()
+end
 
 function mod:GetOptions()
-	return options
+	return {} --options
 end
 
 function mod:SetUnit()

@@ -304,6 +304,7 @@ function StarTip:Finalize(addon)
     self:EstablishAnimation(data.animation)
     self:EstablishHistograms(data.histograms)
     self:EstablishPortrait(data.portrait)
+    self:EstablishTexts(data.texts)
 
     StarTip:Print("Loaded new profile: " .. addon)
 
@@ -343,6 +344,10 @@ end
 
 function StarTip:EstablishPortrait(data)
     establish(data, "Portrait")
+end
+
+function StarTip:EstablishTexts(data)
+    establish(data, "Texts")
 end
 
 local modNames = {L["None"], L["Ctrl"], L["Alt"], L["Shift"]}
