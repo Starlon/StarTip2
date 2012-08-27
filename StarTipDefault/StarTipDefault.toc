@@ -1,10 +1,10 @@
 ## Interface: 40300
 ## Title: StarTip [Default Profile]
-## Notes: Tooltips from Outerspace
+## Notes: A Journey through Outer Space
 ## Author: Starlon
 ## Version: 1.0
-## Deps: StarTip
+## Deps: StarTip2
 ## X-Category: Tooltip
-## X-Part-Of: StarTip
+## X-Part-Of: StarTip2
 
 StarTipDefault.lua
