@@ -446,3 +446,5 @@ L["This will be ran when the tooltip shows."] = true
 L["Background"] = true
 L["One of these scripts will be ran when the tooltip shows."] = true
 L["Custom Profiles"] = true
+L["Choose a profile to load. Current: "] = true
+

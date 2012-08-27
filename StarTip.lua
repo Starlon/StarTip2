@@ -357,13 +357,6 @@ local showChoices = {"Always", "Out of Combat", "Never"}
 options = {
     type = "group",
     args = {
-        addons = {
-            name = L["Custom Profiles"],
-            desc = L["Custom Profiles"],
-            type = "group",
-            args = {},
-            order = 1
-        },
         modules = {
             name = L["Modules"],
             desc = L["Modules"],
@@ -559,7 +552,15 @@ options = {
                     order = 14
                 },
             }
-        }
+        },
+        addons = {
+            name = L["Custom Profiles"],
+            desc = L["Custom Profiles"],
+            type = "group",
+            args = {},
+            order = 10
+        },
+
     }
 }
 
@@ -1011,6 +1012,23 @@ function StarTip:RebuildOpts()
             order = 101
         }
     end
+    options.args.addons.args.header = {
+        name = L["Choose a profile to load. Current: "] .. currentAddon,
+        type="header",
+        order = 1
+    }
+    for addon in pairs(addons) do
+        options.args.addons.args[addon] = {
+            name = addon == currentAddon and (">>" .. addon .. "<<") or addon,
+            type = "execute",
+            func = function()
+                StarTip:Finalize(addon)
+            end,
+            order = 2,
+            disabled = addon == currentAddon and true or false
+        }
+    end
+
     collectgarbage()
 end
 
