@@ -1275,7 +1275,7 @@ return 1, 1, 0
 
 profile.animation = {
     animationsOn = true,
-    animationSpeed = 300,
+    animationSpeed = 100,
     animationInit = [[
 gravity = true
 t = 0
