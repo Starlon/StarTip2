@@ -350,6 +350,13 @@ function mod:CreateBars()
 	createBars()
 end
 
+function mod:Establish(bars)
+    defaultWidgets = bars
+    self.db.profile.bars = {}
+    self:ReInit()
+    self:CreateBars()
+end
+
 function mod:ReInit()
 	if not self.db.profile.bars then
 		self.db.profile.bars = {}

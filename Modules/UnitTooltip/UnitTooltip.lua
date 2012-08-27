@@ -809,8 +809,8 @@ end
 function mod:Establish(profile)
     assert(type(profile) == "table", "Profile object is not a table")
     defaultLines = profile
-    self:ClearLines()
-    self:CreateLines()
+    self.db.profile.lines = profile
+    self:ReInit()
 end
 
 function mod:ReInit()
@@ -944,16 +944,19 @@ do
                colSpan = 2
             end
             if type(widget.y) == "number" and widget.y <= StarTip.tooltipMain:GetLineCount() and (widget.buffer == "blank()" or widget.buffer ~= "") then
-		if widget.buffer == "blank()" then widget.buffer = "" end
-                StarTip.tooltipMain:SetCell(widget.y, widget.x, widget.buffer, widget.fontObj, 
-			justification, colSpan, nil, 0, 0, nil, nil, 40)
 
-		if type(widget.config.color) == "string" and (widget.config.color == " " or widget.config.color ~= "") and widget.color.is_valid then
-			widget.color:Eval()
-			local r, g, b, a = widget.color:P2N()
-			StarTip.tooltipMain:SetCellColor(widget.y, widget.x, 
-        	            r or 0, g or 0, b or 0, a or 1)
-		end
+		        if widget.buffer == "blank()" then 
+                    widget.buffer = "" 
+                end
+
+                StarTip.tooltipMain:SetCell(widget.y, widget.x, widget.buffer, widget.fontObj, 
+	        		justification, colSpan, nil, 0, 0, nil, nil, 40)
+
+			    widget.color:Eval()
+    			local r, g, b, a = widget.color:P2N()
+                if r and g and b then
+		    	    StarTip.tooltipMain:SetCellColor(widget.y, widget.x, r, g, b, a)
+                end
             end
         end
         table.wipe(widgetsToDraw)
@@ -1004,9 +1007,9 @@ function mod:CreateLines()
 
             v.value = v.left
             v.outlined = v.leftOutlined
-            v.color = v.colorL
-            v.maxWidth = v.maxWidthL
-            v.minWidth = v.minWidthL
+            v.color = v.colorLeft
+            v.maxWidth = v.maxWidthLeft
+            v.minWidth = v.minWidthLeft
             local update = v.update or 0
             v.update = 0
             if v.left and v.leftUpdating then v.update = update end
@@ -1017,9 +1020,9 @@ function mod:CreateLines()
             v.outlined = v.rightOutlined
             v.update = 0
             if v.right and v.rightUpdating then v.update = update end
-            v.color = v.colorR
-            v.maxWidth = v.maxWidthR
-            v.minWidth = v.minWidthR
+            v.color = v.colorRight
+            v.maxWidth = v.maxWidthRight
+            v.minWidth = v.minWidthRight
             llines[j].rightObj = v.right and WidgetText:New(mod.core, "StarTip.UnitTooltip:" .. v.name .. ":right:", copy(v), 0, 0, v.layer or 0, StarTip.db.profile.errorLevel, widgetUpdate)
 
            if v.left then
@@ -1127,6 +1130,7 @@ function mod:GetNames()
 end
 
 function mod:RebuildOpts()
+    do return {} end
     options = {
         add = {
             name = L["Add Line"],

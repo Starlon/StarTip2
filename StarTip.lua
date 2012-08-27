@@ -298,55 +298,51 @@ function StarTip:Finalize(addon)
     StarTip.db.profile.addon = addon
 
     self:EstablishLines(data.lines)
-    --self:EstablishBars(data.bars)
-    --self:EstablishBorders(data.borders)
-    --self:EstablishBackground(data.background)
+    self:EstablishBars(data.bars)
+    self:EstablishBorders(data.borders)
+    self:EstablishBackground(data.background)
     self:EstablishAnimation(data.animation)
-    --self:EstablishHistograms(data.histograms)
+    self:EstablishHistograms(data.histograms)
+    self:EstablishPortrait(data.portrait)
 
     StarTip:Print("Loaded new profile: " .. addon)
 
     return true
 end
 
+function establish(data, name)
+    if type(data) == "table" then
+        local mod = StarTip:GetModule(name)
+        mod:Establish(data)
+    end
+end
+
 function StarTip:EstablishLines(data)
-    assert(type(table) == "table", "Data is not a table")
-    local mod = self:GetModule("UnitTooltip")
-    mod:Establish(data)
+    establish(data, "UnitTooltip")
 end
 
 function StarTip:EstablishBars(data)
-    if type(data) ~= "table" then return end
-    local mod = self:GetModule("Bars")
-    for k, v in pairs(mod.bars) do
-        if v.bar then v.bar:SetVisible(false) end
-        --v:Del()
-    end
+    establish(data, "Bars")
+end
 
-    mod:Establish(data)
+function StarTip:EstablishHistograms(data)
+    establish(data, "Histograms")
 end
 
 function StarTip:EstablishBorders(data)
-    if type(data) ~= "table" then return end
-    bordersWidget = WidgetColor:New(core, "Borders", data, StarTip.errorLevel, bordersWidget.draw)
-
-    borderSize = data.borderSize or borderSize
+    establish(data, "Borders")
 end
 
 function StarTip:EstablishBackground(data)
-    if type(data) ~= "table" then return end
-    local mod = self:GetModule("Background")
-    if mod then mod:Establish(data) end
+    establish(data, "Background")
 end
 
 function StarTip:EstablishAnimation(data)
-    local mod = self:GetModule("Animation")
-    if mod then mod:Establish(data) end
+    establish(data, "Animation")
 end
 
-function StarTip:EstablishAnimation(data)
-    local mod = self:GetModule("Animation")
-    if mod then mod:Establish(data) end
+function StarTip:EstablishPortrait(data)
+    establish(data, "Portrait")
 end
 
 local modNames = {L["None"], L["Ctrl"], L["Alt"], L["Shift"]}
@@ -734,7 +730,6 @@ function StarTip:OnEnable()
     if self.db.profile.message then
         ChatFrame1:AddMessage("|cff751f82" .. L["Welcome to "] .. "|r" .. (StarTip.notes or "Error")  .. plugin.Colorize(L[" Type /startip to open config. Alternatively you could press escape and choose the addons menu. Or you can choose to show a minimap icon. You can turn off this message under Settings."], 1, 1, 0))
     end
-
     self:Finalize(self.db.profile.addon or "Default")
 end
 

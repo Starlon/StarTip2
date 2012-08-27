@@ -853,7 +853,24 @@ return status
 
 }
 
-profile.borders = {}
+profile.borders = {
+            [1] = {
+                name = "Borders",
+                enabled = true,
+                expression = [[
+if not UnitExists(unit) then return self.oldr, self.oldg, self.oldb end
+if UnitIsPlayer(unit) then
+    self.oldr, self.oldg, self.oldb = ClassColor(unit)
+    return ClassColor(unit)
+else
+    self.oldr, self.oldg, self.oldb = UnitSelectionColor(unit)
+    return UnitSelectionColor(unit)
+end
+]],
+                update = 300
+            }
+        }
+
 
 profile.background = {
 
@@ -962,29 +979,6 @@ return unpack(db.tapped)
 
 
     }
-
-
-profile.borders = {
-            [1] = {
-                name = "Border",
-                enabled = true,
-                expression = [[
-if not UnitExists(unit) then return self.oldr, self.oldg, self.oldb end
-if UnitIsPlayer(unit) then
-    self.oldr, self.oldg, self.oldb = ClassColor(unit)
-    return ClassColor(unit)
-else
-    self.oldr, self.oldg, self.oldb = UnitSelectionColor(unit)
-    return UnitSelectionColor(unit)
-end
-]],
-                update = 300
-            }
-        }
-
-profile.animation = {
-
-}
 
 profile.histograms = {
     [1] = {

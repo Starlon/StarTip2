@@ -78,7 +78,7 @@ local function draw(widget)
 end
 
 function mod:CreateBorders()
-	for i, border in ipairs(self.db.profile.borders) do
+	for i, border in ipairs(self.db.profile.borders or {}) do
 		local widget = WidgetColor:New(StarTip.core, border.name, copy(border), StarTip.db.profile.errorLevel, draw)
 		tinsert(borders, widget)
 	end
@@ -120,6 +120,12 @@ function mod:OnHide()
 	for k, v in pairs(borders) do
 		v:Stop()
 	end
+end
+
+function mod:Establish(borders)
+    self.db.profile.borders = borders
+    self:WipeBorders()
+    self:CreateBorders()
 end
 
 function mod:RebuildOpts()

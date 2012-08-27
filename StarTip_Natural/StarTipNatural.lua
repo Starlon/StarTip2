@@ -9,21 +9,14 @@ profile.lines = {
         id = "unitname",
         name = "UnitName",
         left = [[
-local name = UnitName(unit)
+local name = Name(unit)
 if not name then return end
-name = name .. (UnitPVP(unit) and "<PVP>" or "")
-local afk = UnitAFK(unit)
-local afk_time = UnitAFKTime(unit)
-local afk_fmt = afk and (afk_time and Angle('AFK: ' .. FormatDuration(afk_time)) or Angle('AFK')) or ''
-local offline = UnitOffline(unit)
-local offline_time = UnitOfflineTime(unit)
-local offline_fmt = offline and (offline_time and Angle('Offline: ' .. FormatDuration(offline_time)) or Angle('Offline')) or ""
+name = name .. (UnitIsPVP(unit) and "<PVP>" or "")
+local afk = AFK(unit) or ""
+local offline = Offline(unit) or ""
 if name then
-    return name .. afk_fmt .. offline_fmt
+    return Colorize(name .. afk .. offline, ClassColor(unit))
 end
-]],
-        colorLeft = [[
-return UnitRelationColor(unit)
 ]],
         enabled = true,
         update = 1000,
@@ -34,16 +27,7 @@ return UnitRelationColor(unit)
         id = "guild",
         name = "Guild/Title",
         left = [[
-if UnitPlayer(unit) then
-    local guild = UnitGuild(unit)
-    return guild and Angle(guild)
-else
-    local title = UnitNameSecondary(unit)
-    return title and Angle(title)
-end
-]],
-        colorLeft = [[
-return UnitRelationColor(unit)
+return Guild(unit, true)
 ]],
         enabled = true
     },
@@ -52,46 +36,12 @@ return UnitRelationColor(unit)
         id = "info",
         name = "Info",
         left = [[
-local lvl = UnitLevel(unit) or "??"
-return "Level " .. lvl
+local lvl = Level(unit) or "??"
+return Colorize("Level " .. lvl, DifficultyColor(unit))
 ]],
         right = [[
-return (UnitRace(unit) or " ")
+return Colorize(Race(unit) or " ", ClassColor(unit))
 ]],
-        colorLeft = [[
-return DifficultyColor(unit)
-]],
-        colorRight = [[
-return UnitRelationColor(unit)
-]],
-        enabled = true
-    },
---[[
-    [4] = {
-        id = 'tag',
-        name = "Tag",
-        left = \[\[
-local class = UnitClass(unit)
-local tags = UnitTagText(unit)
-local details = Inspect.Unit.Detail(unit)
-local txt = class
-if tags then
-    txt = (txt or "") .. tags
-end
-if details and details.health == 0 then
-    txt = (txt or "") .. "<Corpse>"
-end
-return txt
-\]\],
-]]
-        colorLeft = [[
-local details = Inspect.Unit.Detail(unit)
-if details and details.calling then 
-    return ClassColor(unit) 
-end
-return RelationColor(unit)
-]],
-    dontRtrim = true,
         enabled = true
     },
     [5] = {
@@ -99,21 +49,12 @@ return RelationColor(unit)
         name = "Target",
         left = "return 'Target:'",
         right = [[
-local pvp = UnitPVP(unit .. ".target") and "++" or " "
-local lvl = UnitLevel(unit .. ".target")
-local class = UnitCalling(unit .. ".target")
-local name = UnitName(unit..".target") or "None"
+local pvp = UnitIsPVP(unit .. "target") and "++" or " "
+local lvl = Level(unit .. "target")
+local class = Class(unit .. "target")
+local name = Name(unit.."target") or "None"
 local txt = string.format("%s%s%s%s",  name, pvp, lvl and " ("..lvl..") " or "", class and " ("..class..")" or "")
-return  txt
-]],
-        colorLeft = [[
-if not UnitName(unit..".target") then return UnitRelationColor(unit) end
-return UnitRelationColor(unit..'.target')
-]],
-
-        colorRight = [[
-if not UnitName(unit..".target") then return 1, 1, 1, 1 end
-return ClassColor(unit..'.target')
+return  class and Colorize(txt, ClassColor(unit.."target")) or Colorize(txt, DifficultyColor(unit.."target"))
 ]],
         rightUpdating = true,
         update = 500,
@@ -122,7 +63,7 @@ return ClassColor(unit..'.target')
     [6] = {
         id = "location",
         name = "Location",
-        left = "return UnitLocation(unit)",
+        left = "return Location(unit)",
         enabled = true
     },
 }
@@ -132,17 +73,17 @@ profile.bars = {
         name = "Health Bar",
         type = "bar",
         expression = [[
-self.lastHealthBar = UnitHealth(unit)
+self.lastHealthBar = Health(unit)
 return self.lastHealthBar or 0
 ]],
         min = "return 0",
         max = [[
-self.lastHealthBarMax = UnitHealthMax(unit)
+self.lastHealthBarMax = MaxHP(unit)
 return self.lastHealthBarMax or 0
 ]],
         color1 = [[
-if not UnitHealth(unit) then return 1, 1, 1 end
-return GradientHealth(UnitHealth(unit) / UnitHealthMax(unit))
+if not Health(unit) then return 1, 1, 1 end
+return Gradient(Health(unit) / MaxHP(unit))
 ]],
         height = 6,
         length = 0,
@@ -150,23 +91,28 @@ return GradientHealth(UnitHealth(unit) / UnitHealthMax(unit))
         update = 300,
         layer = 1, 
         level = 100,
-        points = {{"TOPLEFT", "BOTTOMLEFT", 15, -15}, {"TOPRIGHT", "BOTTOMRIGHT", -15, -15}}
+        points = {
+            {"TOPLEFT", "StarTipTooltipMain", "BOTTOMLEFT", 0, 0}, 
+            {"TOPRIGHT", "StarTipTooltipMain", "BOTTOMRIGHT", 0, 0}}
     },
 
 }
 
 profile.borders = {
-    expression = [[
-if UnitCalling(unit) then 
+    [1] = {
+        name = "class or relation",
+        expression = [[
+if Class(unit) then 
     local r, g, b = ClassColor(unit)
     return r, g, b, .5
 end
-local r, g, b = RelationColor(unit)
+local r, g, b = DifficultyColor(unit)
 return r, g, b, .5
 ]],
-    update = 300,
-    repeating = true,
-    borderSize = 3
+        update = 300,
+        repeating = true,
+        borderSize = 3
+    }
 }
 
 
@@ -186,5 +132,15 @@ d=(v*0.3); r=t+i*PI*0.02; x=cos(r)*d; y=sin(r)*d
 ]]
 }
 
+profile.portrait = {
+        size = 36,
+        tooltipMain = true,
+        tooltipUnit = false,
+        tooltipItem = true,
+        tooltipSpell = true,
+        animated = false,
+        enabled = true
+        
+}
 StarTip:InitializeProfile("Natural", profile)
 
